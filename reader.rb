@@ -75,15 +75,13 @@ elsif mode == 'yaml'
 
 elsif mode == 'xml'
     doc = Document.new
+    doc << XMLDecl.new if config[:xml_declaration]
     doc.add_element config[:tag_main]
     a.each do |packet|
         p = Element.new config[:tag_packet], doc.root
-        packet.each do |key,value|
-            e = Element.new key, p
-            e.text = value
-        end
+        p.add_attributes packet
     end
-    puts doc
+    Formatters::Pretty.new(2, true).write(doc, $stdout)
 else
     puts "Error: Unknown output format: #{config[:default_output]}"
 end

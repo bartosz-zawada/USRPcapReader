@@ -24,6 +24,9 @@
 :default_output: json
 :sort_by: :tag_time
 
+# Adds XML Declaration to XML output
+:xml_declaration: false
+
 # JSON: variable name
 # XML: parent tag
 :tag_main: data
