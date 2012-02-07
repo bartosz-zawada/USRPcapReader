@@ -11,14 +11,14 @@ require 'pcap'
 
 include Pcap
 
-puts 'USE:', "ruby #{$0} file1 [file2...]" if ARGV.empty?
+puts 'USE:', "ruby #{$0} PcapFile [XML]", '', 'Output format will default to JSON' if ARGV.empty?
 
-ARGV.each do |file|
-    a = []
+a = []
 
-    capture = Capture.open_offline file
-    capture.each { |packet| a << '{"ts":' + packet.time_i.to_s + ', "sz":' + packet.size.to_s + '}' }
-    capture.close
+capture = Capture.open_offline ARGV[0]
+capture.each { |packet| a << [packet.time_i, packet.size]}
+capture.close
 
-    puts '{"Data": [' + a.join(',') + ']}'
-end
+a.sort! {|x,y| x[0] <=> y[0]}
+a.map! {|packet| "{\"ts\":#{packet[0]},\"sz\":#{packet[1]}}"}
+puts '{"Data": [' + a.join(',') + ']}'
