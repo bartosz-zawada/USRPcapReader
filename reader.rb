@@ -11,7 +11,7 @@ require 'pcap'
 
 include Pcap
 
-puts 'USE:', "ruby #{$0} PcapFile [XML]", '', 'Output format will default to JSON' if ARGV.empty?
+puts 'USE:', "ruby #{$0} PcapFile", '', 'Output format will be JSON' if ARGV.empty?
 
 a = []
 
