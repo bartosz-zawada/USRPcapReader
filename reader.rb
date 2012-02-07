@@ -1,6 +1,5 @@
-
 #
-# Author: Bartosz Zawada
+# Author: Bartosz Andrzej Zawada
 #
 
 # https://github.com/ahobson/ruby-pcap
@@ -12,11 +11,11 @@ require 'pcap'
 include Pcap
 
 def printhelp
-puts "USE: ruby #{$0} [options] PcapFile ", ''
-puts '[options] may be:'
-puts '-x | --xml : Output will be in XML instead of JSON'
-puts '-h | --help : prints this'
-exit
+    puts "USE: ruby #{$0} [options] PcapFile ", ''
+    puts '[options] may be:'
+    puts '-x | --xml : Output will be in XML instead of JSON'
+    puts '-h | --help : prints this'
+    exit
 end
 
 return printhelp if ARGV.empty?
