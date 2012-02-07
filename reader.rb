@@ -9,8 +9,10 @@ require 'rubygems'
 require 'pcap'
 require 'yaml'
 require 'json'
+require 'rexml/document'
 
 include Pcap
+include REXML
 
 def printhelp
     puts "USE: ruby #{$0} [options] PcapFile ", ''
@@ -63,6 +65,7 @@ end
 capture.close
 
 a.sort! {|x,y| x[config[:sort_by]] <=> y[config[:sort_by]]}
+output = {}
 
 if mode == 'json'
     puts JSON.dump({config[:tag_main] => a})
@@ -71,9 +74,16 @@ elsif mode == 'yaml'
     puts YAML.dump({config[:tag_main] => a})
 
 elsif mode == 'xml'
-    a.map! {|packet| "  <packet>\n    <ts>#{packet[0]}</ts>\n    <sz>#{packet[1]}</sz>\n  </packet>\n" }
-    puts "<data>\n" + a.join("\n") + '</data>'
-
+    doc = Document.new
+    doc.add_element config[:tag_main]
+    a.each do |packet|
+        p = Element.new config[:tag_packet], doc.root
+        packet.each do |key,value|
+            e = Element.new key, p
+            e.text = value
+        end
+    end
+    puts doc
 else
     puts "Error: Unknown output format: #{config[:default_output]}"
 end
