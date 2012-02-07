@@ -1,0 +1,38 @@
+---
+# Input
+# Discards non IP packet values (default: false)
+#:discard_non_ip: false
+
+# Discards IP (TCP & UDP also) packet values (default: false)
+#:discard_ip: false
+
+# Discards TCP packet values (default: false)
+#:discard_tcp: false
+
+# Discards UDP packet values (default: false)
+#:discard_udp: false
+
+# Data Read
+:read_time: true
+:read_size: true
+
+
+# Output format, possibles:
+# json (default)
+# xml
+:default_output: json
+
+# JSON: variable name
+# XML: parent tag
+:tag_main: data
+
+# XML: Tag for each packet
+:tag_packet: packet
+
+# JSON: hash key for Timestamp
+# XML: attribute for Timestamp
+:tag_time: ts
+
+# JSON: hash key for Size
+# XML: attribute for size
+:tag_size: sz

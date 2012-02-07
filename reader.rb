@@ -1,5 +1,5 @@
 #
-# Author: Bartosz Andrzej Zawada
+# Author: Bartosz Zawada
 #
 
 # https://github.com/ahobson/ruby-pcap
@@ -7,28 +7,35 @@
 
 require 'rubygems'
 require 'pcap'
+require 'yaml'
+require 'json'
 
 include Pcap
 
 def printhelp
     puts "USE: ruby #{$0} [options] PcapFile ", ''
     puts '[options] may be:'
-    puts '-x | --xml : Output will be in XML instead of JSON'
-    puts '-h | --help : prints this'
+    puts '-j | --json : Output will be in JSON (default)'
+    puts '-x | --xml : Output will be in XML'
     exit
 end
 
 return printhelp if ARGV.empty?
 
-mode = :JSON
+
 file = :NO_FILE
 
+# Load configuration file
+config = YAML.load_file 'config.yml'
+mode = config[:default_output]
+
+# Parse command line arguments
 ARGV.each do |arg|
     if arg[0] == '-'
         mode = :XML if arg == '--xml' || arg == '-x'
-        printhelp if arg == '--help' ||  arg =='-h'
+        mode = :JSON if arg == '--json' || arg == '-j'
     else
-        #If it's not an option, it ought to be the pcapfile
+        # If it's not an option, it ought to be the pcapfile
         if file == :NO_FILE
             file = arg
         else
@@ -37,8 +44,6 @@ ARGV.each do |arg|
     end
 end
 
-a = []
-
 begin
     capture = Capture.open_offline file
 rescue
@@ -46,14 +51,19 @@ rescue
     exit
 end
 
-capture.each { |packet| a << [packet.time_i, packet.size]}
+a = []
+capture.each do |packet|
+    values = {}
+    values[config[:tag_time]] = packet.time_i if config[:read_time]
+    values[config[:tag_size]] = packet.time_i if config[:read_size]
+    a << values
+end
 capture.close
 
 a.sort! {|x,y| x[0] <=> y[0]}
 
-if mode == :JSON
-    a.map! {|packet| "{\"ts\":#{packet[0]},\"sz\":#{packet[1]}}"}
-    puts '{"Data": [' + a.join(',') + ']}'
+if mode == 'json'
+    puts JSON.dump({config[:tag_main] => a})
 else
     a.map! {|packet| "  <packet>\n    <ts>#{packet[0]}</ts>\n    <sz>#{packet[1]}</sz>\n  </packet>\n" }
     puts "<data>\n" + a.join("\n") + '</data>'
