@@ -1,0 +1,8 @@
+Useless Ruby Pcap Reader
+
+Reads Pcap files passed through command line and writes unix time and size of each packet to a file named like each one of the passed but concatenating '.data' to the name
+
+
+Requires ruby-pcap:
+https://github.com/ahobson/ruby-pcap
+ruby-pcap is copyrighted free software by Masaki Fukushima.
