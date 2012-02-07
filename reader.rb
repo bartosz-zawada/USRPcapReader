@@ -20,7 +20,5 @@ ARGV.each do |file|
     capture.each { |packet| a << '{"ts":' + packet.time_i.to_s + ', "sz":' + packet.size.to_s + '}' }
     capture.close
 
-    out = File.open (file + '.data'), 'w'
-    out.puts '{"Data": [' + a.join(',') + ']}'
-    out.close
+    puts '{"Data": [' + a.join(',') + ']}'
 end
