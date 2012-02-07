@@ -1,14 +1,10 @@
+
 #
-# Pcap Reader
+# Author: Bartosz Zawada
 #
-# Lee ficheros .pcap que se le pasan como argumento por línea
-# de comandos
-#
-# Autor: Bartosz Zawada
-#
+
 # https://github.com/ahobson/ruby-pcap
 # http://rubypcap.svn.sourceforge.net/viewvc/rubypcap/doc/index.html
-#
 
 require 'rubygems'
 require 'pcap'
