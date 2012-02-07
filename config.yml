@@ -19,8 +19,10 @@
 
 # Output format, possibles:
 # json (default)
+# yaml
 # xml
 :default_output: json
+:sort_by: :tag_time
 
 # JSON: variable name
 # XML: parent tag
