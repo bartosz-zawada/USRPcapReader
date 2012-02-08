@@ -16,7 +16,7 @@ include Pcap
 include REXML
 
 APP_NAME = 'Useless Small Ruby Pcap Reader'
-VERSION = 'r15'
+VERSION = 'r16'
 REPO = 'https://github.com/BeBouR/USRPcapReader'
 AUTHOR = 'BeBouR (Bartosz Zawada)'
 
@@ -98,8 +98,30 @@ capture.each do |packet|
     next if packet_class == :other_ip && config[:discard_other_ip_packets]
 
     values = {}
+    # packet data
     values[config[:data_time]] = packet.time_i if config[:read_time]
     values[config[:data_size]] = packet.size if config[:read_size]
+    values[config[:data_caplen]] = packet.caplen if config[:read_caplen]
+    values[config[:data_datalink]] = packet.datalink if config[:read_datalink]
+
+    # IP data
+    values[config[:data_ip_df]] = packet.ip_df? if config[:read_ip_df]
+    values[config[:data_ip_dest]] = packet.ip_dst if config[:read_ip_dest]
+    values[config[:data_ip_flags]] = packet.ip_flags if config[:read_ip_flags]
+    values[config[:data_ip_hlen]] = packet.ip_hlen if config[:read_ip_hlen]
+    values[config[:data_ip_id]] = packet.ip_id if config[:read_ip_id]
+    values[config[:data_ip_len]] = packet.ip_len if config[:read_ip_len]
+    values[config[:data_ip_mf]] = packet.ip_mf? if config[:read_ip_mf]
+    values[config[:data_ip_offset]] = packet.ip_off if config[:read_ip_offset]
+    values[config[:data_ip_protocol]] = packet.ip_proto if config[:read_ip_protocol]
+    values[config[:data_ip_source]] = packet.ip_src if config[:read_ip_source]
+    values[config[:data_ip_sum]] = packet.ip_sum if config[:read_ip_sum]
+    values[config[:data_ip_tos]] = packet.ip_tos if config[:read_ip_tos]
+    values[config[:data_ip_ttl]] = packet.ip_ttl if config[:read_ip_ttl]
+    values[config[:data_ip_version]] = packet.ip_ver if config[:read_ip_version]
+
+    # TCP data
+
     a << values
 end
 capture.close

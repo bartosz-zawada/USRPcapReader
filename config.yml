@@ -8,9 +8,46 @@
 :discard_udp_ip_packets: false
 :discard_other_ip_packets: false
 
-# Data Read
+# Which Data should be printed
+#
+# Timestamp
+# Size
+# Capture Length
+# Integer representing data-link type
 :read_time: true
 :read_size: true
+:read_caplen: false
+:read_datalink: false
+
+# IP Packet options: Respectively
+# IP, DF (Don't Fragment) bit
+# IP, Destination Address
+# IP, Flags
+# IP, Header Length
+# IP, Identification
+# IP, Total Length
+# IP, MF (More Fragments) bit
+# IP, Fragment Offset
+# IP, Protocol
+# IP, Source Address
+# IP, Checksum
+# IP, TOS (Type Of Service)
+# IP, TTL (Time To Live)
+# IP, Version
+:read_ip_df: false
+:read_ip_dest: false
+:read_ip_flags: false
+:read_ip_hlen: false
+:read_ip_id: false
+:read_ip_len: false
+:read_ip_mf: false
+:read_ip_offset: false
+:read_ip_protocol: false
+:read_ip_source: false
+:read_ip_sum: false
+:read_ip_tos: false
+:read_ip_ttl: false
+:read_ip_version: false
 
 
 # Output format, possibles:
@@ -40,10 +77,23 @@
 # XML: Tag for each packet
 :data_packet: packet
 
-# JSON & YAML: hash key for Timestamp
-# XML: attribute for Timestamp
-:data_time: ts
-
-# JSON & YAML: hash key for Size
-# XML: attribute for size
-:data_size: sz
+# JSON & YAML: hash key for each data
+# XML: attribute for each data
+:data_time: time
+:data_size: size
+:data_caplen: caplen
+:data_datalink: datalink
+:data_ip_df: ip_df
+:data_ip_dest: ip_dest
+:data_ip_flags: ip_flags
+:data_ip_hlen: ip_hlen
+:data_ip_id: ip_id
+:data_ip_len: ip_len
+:data_ip_mf: ip_mf
+:data_ip_offset: ip_offset
+:data_ip_protocol: ip_protocol
+:data_ip_source: ip_source
+:data_ip_sum: ip_checksum
+:data_ip_tos: ip_tos
+:data_ip_ttl: ip_ttl
+:data_ip_version: ip_version
