@@ -7,6 +7,7 @@
 
 require 'rubygems'
 require 'pcap'
+require 'optparse'
 require 'yaml'
 require 'json'
 require 'rexml/document'
@@ -14,47 +15,62 @@ require 'rexml/document'
 include Pcap
 include REXML
 
-def printhelp
-    puts "USE: ruby #{$0} [options] PcapFile ", ''
-    puts '[options] may be:'
-    puts '-j | --json : Output will be in JSON (default)'
-    puts '-y | --yaml : Output will be in YAML'
-    puts '-x | --xml : Output will be in XML'
-    exit
-end
+APP_NAME = 'Useless Small Ruby Pcap Reader'
+VERSION = 'r14'
+REPO = 'https://github.com/BeBouR/USRPcapReader'
+AUTHOR = 'BeBouR (Bartosz Zawada)'
 
-return printhelp if ARGV.empty?
-
-
-file = :NO_FILE
-
-# Load configuration file
-config = YAML.load_file 'config.yml'
-mode = config[:default_output]
+# Configuration file
+config_file = 'config.yml'
+mode = nil
 
 # Parse command line arguments
-ARGV.each do |arg|
-    if arg[0] == '-'
-        mode = 'xml' if arg == '--xml' || arg == '-x'
-        mode = 'json' if arg == '--json' || arg == '-j'
-        mode = 'yaml' if arg == '--yaml' || arg == '-y'
-    else
-        # If it's not an option, it ought to be the pcapfile
-        if file == :NO_FILE
-            file = arg
-        else
-            return puts 'Only one input file allowed'
-        end
-    end
-end
+OptionParser.new do |opts|
+    opts.banner = "Usage: #{$0}.rb pcapfile [options]"
 
+    opts.separator " "
+
+    opts.on([:json, :yaml, :xml], "--output FORMAT", "-o", "Select output FORMAT (json, yaml, xml)") do |t|
+        mode = t
+    end
+
+    opts.on("--config FILE", "-c", "Select other configuration file") do |f|
+        config_file = f
+    end
+
+    opts.separator " "
+
+    opts.on_tail("-h", "--help", "Show this message") do
+        puts opts
+        exit
+    end
+
+    opts.on_tail("-v", "--version", "Prints the version") do
+        puts "#{APP_NAME} - #{VERSION}", "Author: #{AUTHOR}", "Project located in #{REPO}"
+        exit
+    end
+end.parse!
+
+# Load configuration file
 begin
-    capture = Capture.open_offline file
+    config = YAML.load_file config_file
 rescue
-    puts 'Error opening file:' + " '#{file}'"
+    $stderr.puts 'Error opening configuration file:' + " '#{config_file}'"
     exit
 end
 
+output_mode = mode ? mode.to_sym : config[:default_output]
+config[:input_file] = ARGV[0]
+
+# Capture
+begin
+    capture = Capture.open_offline config[:input_file]
+rescue
+    $stderr.puts 'Error opening file:' + " '#{config[:input_file]}'"
+    exit
+end
+
+# Extracting packets from capture
 a = []
 capture.each do |packet|
     values = {}
@@ -64,16 +80,23 @@ capture.each do |packet|
 end
 capture.close
 
-a.sort! {|x,y| x[config[:sort_by]] <=> y[config[:sort_by]]}
-output = {}
+# Packet sort
+if config[:sort]
+    if config[:sort_asc]
+        a.sort! {|x,y| x[config[:sort_by]] <=> y[config[:sort_by]]}
+    else
+        a.sort! {|x,y| y[config[:sort_by]] <=> x[config[:sort_by]]}
+    end
+end
 
-if mode == 'json'
+# Output
+if output_mode == :json
     puts JSON.dump({config[:tag_main] => a})
 
-elsif mode == 'yaml'
+elsif output_mode == :yaml
     puts YAML.dump({config[:tag_main] => a})
 
-elsif mode == 'xml'
+elsif output_mode == :xml
     doc = Document.new
     doc << XMLDecl.new if config[:xml_declaration]
     doc.add_element config[:tag_main]

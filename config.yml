@@ -18,13 +18,24 @@
 
 
 # Output format, possibles:
-# json (default)
-# yaml
-# xml
-:default_output: json
+# :json (default)
+# :yaml
+# :xml
+# (colon at the beginning is mandatory)
+:default_output: :json
+
+# Sort? (default: true)
+:sort: true
+
+# Sorts packets by this packet value, possibles:
+# :tag_time (default)
+# :tag_size
 :sort_by: :tag_time
 
-# Adds XML Declaration to XML output
+# Sorts ascending (default: true)
+:sort_asc: false
+
+# Adds XML Declaration to XML output (default: false)
 :xml_declaration: false
 
 # JSON: variable name
