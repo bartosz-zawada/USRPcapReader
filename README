@@ -1,9 +1,22 @@
 Useless Small Ruby Pcap Reader
 
-Reads a Pcap file passed through command line and prints unix time and size of each packet in the file
-The default output format is JSON, but may be changed to XML if the script is called with the --xml parameter
+Reads a Pcap file passed through command line and prints unix time and size of each packet in the file in JSON, YAML or XML format.
 
+It's getting more and more customizable:
+
+- Choose what data to output (kind of lacking in this by now)
+- Discard packets depending on type
+- Sort results
+- Choose output format
+- All settings are in one file.
+- You can have multiple configuration files and choose which one to use by passing it as command line argument
+
+Tested on Ruby 1.9.3p0
 
 Requires ruby-pcap:
 https://github.com/ahobson/ruby-pcap
 ruby-pcap is copyrighted free software by Masaki Fukushima.
+
+
+
+Author: BeBouR (Bartosz Zawada)

@@ -16,7 +16,7 @@ include Pcap
 include REXML
 
 APP_NAME = 'Useless Small Ruby Pcap Reader'
-VERSION = 'r14'
+VERSION = 'r15'
 REPO = 'https://github.com/BeBouR/USRPcapReader'
 AUTHOR = 'BeBouR (Bartosz Zawada)'
 
@@ -24,14 +24,31 @@ AUTHOR = 'BeBouR (Bartosz Zawada)'
 config_file = 'config.yml'
 mode = nil
 
+# Method that returns a packet type
+def get_packet_type packet
+    return :non_ip unless packet.ip?
+    return :tcp_ip if packet.tcp?
+    return :udp_ip if packet.udp?
+    return :other_ip
+end
+
 # Parse command line arguments
 OptionParser.new do |opts|
     opts.banner = "Usage: #{$0}.rb pcapfile [options]"
 
     opts.separator " "
 
-    opts.on([:json, :yaml, :xml], "--output FORMAT", "-o", "Select output FORMAT (json, yaml, xml)") do |t|
-        mode = t
+    opts.on([:json, :yaml, :xml], "--output FORMAT", "-o", "Select output FORMAT (json, yaml, xml)") do |format|
+        # OptionParser accepts j, js, jso without giving the correct option, fixed
+        if 'json'.start_with? format
+            mode = :json
+        elsif 'yaml'.start_with? format
+            mode = :yaml
+        elsif 'xml'.start_with? format
+            mode = :xml
+        else
+            mode = format
+        end
     end
 
     opts.on("--config FILE", "-c", "Select other configuration file") do |f|
@@ -59,7 +76,7 @@ rescue
     exit
 end
 
-output_mode = mode ? mode.to_sym : config[:default_output]
+output_mode = mode ? mode : config[:default_output].to_sym
 config[:input_file] = ARGV[0]
 
 # Capture
@@ -73,38 +90,46 @@ end
 # Extracting packets from capture
 a = []
 capture.each do |packet|
+    # Packet discard
+    packet_class = get_packet_type packet
+    next if packet_class == :non_ip && config[:discard_non_ip_packets]
+    next if packet_class == :tcp_ip && config[:discard_tcp_ip_packets]
+    next if packet_class == :udp_ip && config[:discard_udp_ip_packets]
+    next if packet_class == :other_ip && config[:discard_other_ip_packets]
+
     values = {}
-    values[config[:tag_time]] = packet.time_i if config[:read_time]
-    values[config[:tag_size]] = packet.size if config[:read_size]
+    values[config[:data_time]] = packet.time_i if config[:read_time]
+    values[config[:data_size]] = packet.size if config[:read_size]
     a << values
 end
 capture.close
 
 # Packet sort
 if config[:sort]
+    # Some fucked up formulae to convert strings to symbols and read from config
     if config[:sort_asc]
-        a.sort! {|x,y| x[config[:sort_by]] <=> y[config[:sort_by]]}
+        a.sort! {|x,y| x[config[config[:sort_by].to_sym]] <=> y[config[config[:sort_by].to_sym]]}
     else
-        a.sort! {|x,y| y[config[:sort_by]] <=> x[config[:sort_by]]}
+        a.sort! {|x,y| y[config[config[:sort_by].to_sym]] <=> x[config[config[:sort_by].to_sym]]}
     end
 end
 
 # Output
 if output_mode == :json
-    puts JSON.dump({config[:tag_main] => a})
+    puts JSON.dump({config[:data_main] => a})
 
 elsif output_mode == :yaml
-    puts YAML.dump({config[:tag_main] => a})
+    puts YAML.dump({config[:data_main] => a})
 
 elsif output_mode == :xml
     doc = Document.new
     doc << XMLDecl.new if config[:xml_declaration]
-    doc.add_element config[:tag_main]
+    doc.add_element config[:data_main]
     a.each do |packet|
-        p = Element.new config[:tag_packet], doc.root
+        p = Element.new config[:data_packet], doc.root
         p.add_attributes packet
     end
     Formatters::Pretty.new(2, true).write(doc, $stdout)
 else
-    puts "Error: Unknown output format: #{config[:default_output]}"
+    puts "Error: Unknown output format: #{output_mode}"
 end

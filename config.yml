@@ -1,16 +1,12 @@
 ---
 # Input
-# Discards non IP packet values (default: false)
-#:discard_non_ip: false
 
-# Discards IP (TCP & UDP also) packet values (default: false)
-#:discard_ip: false
-
-# Discards TCP packet values (default: false)
-#:discard_tcp: false
-
-# Discards UDP packet values (default: false)
-#:discard_udp: false
+# Packet discarding
+# Discards packets depending on their type.
+:discard_non_ip_packets: false
+:discard_tcp_ip_packets: false
+:discard_udp_ip_packets: false
+:discard_other_ip_packets: false
 
 # Data Read
 :read_time: true
@@ -18,37 +14,36 @@
 
 
 # Output format, possibles:
-# :json (default)
-# :yaml
-# :xml
-# (colon at the beginning is mandatory)
-:default_output: :json
+# json (default)
+# yaml
+# xml
+:default_output: json
 
 # Sort? (default: true)
 :sort: true
 
 # Sorts packets by this packet value, possibles:
-# :tag_time (default)
-# :tag_size
-:sort_by: :tag_time
+# data_time (default)
+# data_size
+:sort_by: data_time
 
 # Sorts ascending (default: true)
-:sort_asc: false
+:sort_asc: true
 
 # Adds XML Declaration to XML output (default: false)
 :xml_declaration: false
 
-# JSON: variable name
+# JSON & YAML: variable name
 # XML: parent tag
-:tag_main: data
+:data_main: data
 
 # XML: Tag for each packet
-:tag_packet: packet
+:data_packet: packet
 
-# JSON: hash key for Timestamp
+# JSON & YAML: hash key for Timestamp
 # XML: attribute for Timestamp
-:tag_time: ts
+:data_time: ts
 
-# JSON: hash key for Size
+# JSON & YAML: hash key for Size
 # XML: attribute for size
-:tag_size: sz
+:data_size: sz
