@@ -15,6 +15,11 @@ It's getting more and more customizable:
 - All settings are in one file.
 - You can have multiple configuration files and choose which one to use by passing it as command line argument
 
+
+TODO:
+Access to TCP and UDP data fields,
+Access to RawData and IPData, maybe (it's half binary, half text, it throws encoding errors)
+
 Tested on Ruby 1.9.3p0
 
 Requires ruby-pcap:

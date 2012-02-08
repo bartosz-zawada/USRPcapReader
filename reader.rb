@@ -1,5 +1,7 @@
 #
-# Author: Bartosz Zawada
+# Useless Small Ruby Pcap Reader
+#
+# Author: BeBour (Bartosz Zawada)
 #
 
 # https://github.com/ahobson/ruby-pcap
@@ -16,7 +18,7 @@ include Pcap
 include REXML
 
 APP_NAME = 'Useless Small Ruby Pcap Reader'
-VERSION = 'r16'
+VERSION = 'r17'
 REPO = 'https://github.com/BeBouR/USRPcapReader'
 AUTHOR = 'BeBouR (Bartosz Zawada)'
 
@@ -35,7 +37,6 @@ end
 # Parse command line arguments
 OptionParser.new do |opts|
     opts.banner = "Usage: #{$0}.rb pcapfile [options]"
-
     opts.separator " "
 
     opts.on([:json, :yaml, :xml], "--output FORMAT", "-o", "Select output FORMAT (json, yaml, xml)") do |format|
