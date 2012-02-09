@@ -1,4 +1,5 @@
-#
+#!/usr/bin/ruby
+
 # Useless Small Ruby Pcap Reader
 #
 # Author: BeBour (Bartosz Zawada)
@@ -18,7 +19,7 @@ include Pcap
 include REXML
 
 APP_NAME = 'Useless Small Ruby Pcap Reader'
-VERSION = 'r17'
+VERSION = 'r18'
 REPO = 'https://github.com/BeBouR/USRPcapReader'
 AUTHOR = 'BeBouR (Bartosz Zawada)'
 
@@ -106,22 +107,48 @@ capture.each do |packet|
     values[config[:data_datalink]] = packet.datalink if config[:read_datalink]
 
     # IP data
-    values[config[:data_ip_df]] = packet.ip_df? if config[:read_ip_df]
-    values[config[:data_ip_dest]] = packet.ip_dst if config[:read_ip_dest]
-    values[config[:data_ip_flags]] = packet.ip_flags if config[:read_ip_flags]
-    values[config[:data_ip_hlen]] = packet.ip_hlen if config[:read_ip_hlen]
-    values[config[:data_ip_id]] = packet.ip_id if config[:read_ip_id]
-    values[config[:data_ip_len]] = packet.ip_len if config[:read_ip_len]
-    values[config[:data_ip_mf]] = packet.ip_mf? if config[:read_ip_mf]
-    values[config[:data_ip_offset]] = packet.ip_off if config[:read_ip_offset]
-    values[config[:data_ip_protocol]] = packet.ip_proto if config[:read_ip_protocol]
-    values[config[:data_ip_source]] = packet.ip_src if config[:read_ip_source]
-    values[config[:data_ip_sum]] = packet.ip_sum if config[:read_ip_sum]
-    values[config[:data_ip_tos]] = packet.ip_tos if config[:read_ip_tos]
-    values[config[:data_ip_ttl]] = packet.ip_ttl if config[:read_ip_ttl]
-    values[config[:data_ip_version]] = packet.ip_ver if config[:read_ip_version]
+    unless packet_class == :non_ip
+        values[config[:data_ip_df]] = packet.ip_df? if config[:read_ip_df]
+        values[config[:data_ip_dest]] = packet.ip_dst.to_s if config[:read_ip_dest]
+        values[config[:data_ip_flags]] = packet.ip_flags if config[:read_ip_flags]
+        values[config[:data_ip_hlen]] = packet.ip_hlen if config[:read_ip_hlen]
+        values[config[:data_ip_id]] = packet.ip_id if config[:read_ip_id]
+        values[config[:data_ip_len]] = packet.ip_len if config[:read_ip_len]
+        values[config[:data_ip_mf]] = packet.ip_mf? if config[:read_ip_mf]
+        values[config[:data_ip_off]] = packet.ip_off if config[:read_ip_off]
+        values[config[:data_ip_proto]] = packet.ip_proto if config[:read_ip_proto]
+        values[config[:data_ip_src]] = packet.ip_src.to_s if config[:read_ip_src]
+        values[config[:data_ip_sum]] = packet.ip_sum if config[:read_ip_sum]
+        values[config[:data_ip_tos]] = packet.ip_tos if config[:read_ip_tos]
+        values[config[:data_ip_ttl]] = packet.ip_ttl if config[:read_ip_ttl]
+        values[config[:data_ip_ver]] = packet.ip_ver if config[:read_ip_ver]
 
-    # TCP data
+        # TCP data
+        if packet_class == :tcp_ip
+            values[config[:data_tcp_ack]] = packet.tcp_ack if config[:read_tcp_ack]
+            values[config[:data_tcp_len]] = packet.tcp_data_len if config[:read_tcp_len]
+            values[config[:data_tcp_dport]] = packet.tcp_dport if config[:read_tcp_dport]
+            values[config[:data_tcp_flags]] = packet.tcp_flags if config[:read_tcp_flags]
+            values[config[:data_tcp_fin]] = packet.tcp_fin? if config[:read_tcp_fin]
+            values[config[:data_tcp_syn]] = packet.tcp_syn? if config[:read_tcp_syn]
+            values[config[:data_tcp_rst]] = packet.tcp_rst? if config[:read_tcp_rst]
+            values[config[:data_tcp_psh]] = packet.tcp_psh? if config[:read_tcp_psh]
+            values[config[:data_tcp_ackf]] = packet.tcp_ack? if config[:read_tcp_ackf]
+            values[config[:data_tcp_urg]] = packet.tcp_urg? if config[:read_tcp_urg]
+            values[config[:data_tcp_hlen]] = packet.tcp_hlen if config[:read_tcp_hlen]
+            values[config[:data_tcp_seq]] = packet.tcp_seq if config[:read_tcp_seq]
+            values[config[:data_tcp_sum]] = packet.tcp_sum if config[:read_tcp_sum]
+            values[config[:data_tcp_sport]] = packet.tcp_sport if config[:read_tcp_sport]
+            values[config[:data_tcp_urp]] = packet.tcp_urp if config[:read_tcp_urp]
+            values[config[:data_tcp_win]] = packet.tcp_win if config[:read_tcp_win]
+        end
+
+        # UDP data
+        #if packet_class == :udp_ip
+
+        #end
+
+    end
 
     a << values
 end

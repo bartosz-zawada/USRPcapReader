@@ -41,13 +41,48 @@
 :read_ip_id: false
 :read_ip_len: false
 :read_ip_mf: false
-:read_ip_offset: false
-:read_ip_protocol: false
-:read_ip_source: false
+:read_ip_off: false
+:read_ip_proto: false
+:read_ip_src: false
 :read_ip_sum: false
 :read_ip_tos: false
 :read_ip_ttl: false
-:read_ip_version: false
+:read_ip_ver: false
+
+# TCP Packet options: Respectively
+# TCP, ACK (Acknowledgement number)
+# TCP, Data
+# TCP, Data Length
+# TCP, Destination Port
+# TCP, Flags (value of all 6 flags)
+# TCP, FIN flag
+# TCP, SYN flag
+# TCP, RST flag
+# TCP, PSH flag
+# TCP, ACK flag
+# TCP, URG flag
+# TCP, Header Length
+# TCP, Sequence Number
+# TCP, Checksum
+# TCP, Source Port
+# TCP, Urgent Pointer
+# TCP, Window size
+:read_tcp_ack: false
+:read_tcp_len: false
+:read_tcp_dport: false
+:read_tcp_flags: false
+:read_tcp_fin: false
+:read_tcp_syn: false
+:read_tcp_rst: false
+:read_tcp_psh: false
+:read_tcp_ackf: false
+:read_tcp_urg: false
+:read_tcp_hlen: false
+:read_tcp_seq: false
+:read_tcp_sum: false
+:read_tcp_sport: false
+:read_tcp_urp: false
+:read_tcp_win: false
 
 
 # Output format, possibles:
@@ -83,6 +118,7 @@
 :data_size: size
 :data_caplen: caplen
 :data_datalink: datalink
+
 :data_ip_df: ip_df
 :data_ip_dest: ip_dest
 :data_ip_flags: ip_flags
@@ -90,10 +126,27 @@
 :data_ip_id: ip_id
 :data_ip_len: ip_len
 :data_ip_mf: ip_mf
-:data_ip_offset: ip_offset
-:data_ip_protocol: ip_protocol
-:data_ip_source: ip_source
+:data_ip_off: ip_offset
+:data_ip_proto: ip_protocol
+:data_ip_src: ip_source
 :data_ip_sum: ip_checksum
 :data_ip_tos: ip_tos
 :data_ip_ttl: ip_ttl
-:data_ip_version: ip_version
+:data_ip_ver: ip_version
+
+:data_tcp_ack: tcp_ack
+:data_tcp_len: tcp_len
+:data_tcp_dport: tcp_dport
+:data_tcp_flags: tcp_flags
+:data_tcp_fin: tcp_fin
+:data_tcp_syn: tcp_syn
+:data_tcp_rst: tcp_rst
+:data_tcp_psh: tcp_psh
+:data_tcp_ackf: tcp_ack
+:data_tcp_urg: tcp_urg
+:data_tcp_hlen: tcp_hlen
+:data_tcp_seq: tcp_seq
+:data_tcp_sum: tcp_sum
+:data_tcp_sport: tcp_sport
+:data_tcp_urp: tcp_urp
+:data_tcp_win: tcp_win
